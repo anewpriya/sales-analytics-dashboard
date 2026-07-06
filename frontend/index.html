@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaaS Analytics Dashboard</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+                'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+                sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-label {
+            color: #666;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .card-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .card-subtext {
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        .charts-section {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 40px;
+        }
+
+        .charts-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        .insights-section {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .insights-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .insight-item {
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #f5f5f5;
+            border-left: 4px solid #667eea;
+            border-radius: 5px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 1.2em;
+        }
+
+        .error {
+            background: #ff6b6b;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        function Dashboard() {
+            const [metrics, setMetrics] = useState(null);
+            const [comparison, setComparison] = useState(null);
+            const [insights, setInsights] = useState(null);
+            const [loading, setLoading] = useState(true);
+            const [error, setError] = useState(null);
+
+            useEffect(() => {
+                // Fetch all data from Flask API
+                Promise.all([
+                    fetch('http://localhost:5000/api/metrics').then(r => r.json()),
+                    fetch('http://localhost:5000/api/comparison').then(r => r.json()),
+                    fetch('http://localhost:5000/api/insights').then(r => r.json())
+                ])
+                .then(([metricsData, comparisonData, insightsData]) => {
+                    setMetrics(metricsData);
+                    setComparison(comparisonData);
+                    setInsights(insightsData);
+                    setLoading(false);
+                })
+                .catch(err => {
+                    setError('Failed to load data. Make sure Flask API is running on http://localhost:5000');
+                    setLoading(false);
+                });
+            }, []);
+
+            if (loading) {
+                return <div className="container"><div className="loading">Loading dashboard...</div></div>;
+            }
+
+            if (error) {
+                return <div className="container"><div className="error">{error}</div></div>;
+            }
+
+            return (
+                <div className="container">
+                    <div className="header">
+                        <h1>📊 SaaS Analytics Dashboard</h1>
+                        <p>Real-time customer churn analysis</p>
+                    </div>
+
+                    {/* Metrics Cards */}
+                    <div className="metrics-grid">
+                        <div className="card">
+                            <div className="card-label">Total Customers</div>
+                            <div className="card-value">{metrics.total_customers.toLocaleString()}</div>
+                            <div className="card-subtext">All active and churned</div>
+                        </div>
+
+                        <div className="card">
+                            <div className="card-label">Churned Customers</div>
+                            <div className="card-value" style={{color: '#ff6b6b'}}>{metrics.churned_customers}</div>
+                            <div className="card-subtext">Customers who left</div>
+                        </div>
+
+                        <div className="card">
+                            <div className="card-label">Active Customers</div>
+                            <div className="card-value" style={{color: '#51cf66'}}>{metrics.active_customers}</div>
+                            <div className="card-subtext">Customers who stayed</div>
+                        </div>
+
+                        <div className="card">
+                            <div className="card-label">Churn Rate</div>
+                            <div className="card-value" style={{color: '#ffa94d'}}>{metrics.churn_rate}%</div>
+                            <div className="card-subtext">Percentage of churn</div>
+                        </div>
+                    </div>
+
+                    {/* Charts Section */}
+                    <div className="charts-section">
+                        <h2>Customer Segmentation</h2>
+                        <div className="charts-grid">
+                            {/* Pie Chart - Churned vs Active */}
+                            <div className="chart-container">
+                                <canvas id="churnChart"></canvas>
+                            </div>
+
+                            {/* Bar Chart - Usage Comparison */}
+                            <div className="chart-container">
+                                <canvas id="usageChart"></canvas>
+                            </div>
+
+                            {/* Bar Chart - Login Frequency */}
+                            <div className="chart-container">
+                                <canvas id="loginChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Insights Section */}
+                    <div className="insights-section">
+                        <h2>💡 Key Insights</h2>
+                        {insights.insights.map((insight, idx) => (
+                            <div key={idx} className="insight-item">
+                                {insight}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        // Create charts after component mounts
+        function InitializeCharts(metrics, comparison) {
+            // Pie Chart
+            const churnCtx = document.getElementById('churnChart');
+            if (churnCtx) {
+                new Chart(churnCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Active', 'Churned'],
+                        datasets: [{
+                            data: [metrics.active_customers, metrics.churned_customers],
+                            backgroundColor: ['#51cf66', '#ff6b6b'],
+                            borderColor: ['#51cf66', '#ff6b6b'],
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom' }
+                        }
+                    }
+                });
+            }
+
+            // Usage Comparison
+            const usageCtx = document.getElementById('usageChart');
+            if (usageCtx) {
+                new Chart(usageCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Churned', 'Active'],
+                        datasets: [{
+                            label: 'Avg Daily Usage (mins)',
+                            data: [
+                                comparison.churned.avg_daily_usage_mins,
+                                comparison.active.avg_daily_usage_mins
+                            ],
+                            backgroundColor: ['#ff6b6b', '#51cf66'],
+                            borderRadius: 5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        indexAxis: 'y',
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            }
+
+            // Login Frequency
+            const loginCtx = document.getElementById('loginChart');
+            if (loginCtx) {
+                const churnedLogin = comparison.churned.login_frequency;
+                const activeLogin = comparison.active.login_frequency;
+
+                new Chart(loginCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Daily', 'Weekly', 'Rarely'],
+                        datasets: [
+                            {
+                                label: 'Churned',
+                                data: [
+                                    churnedLogin.Daily || 0,
+                                    churnedLogin.Weekly || 0,
+                                    churnedLogin.Rarely || 0
+                                ],
+                                backgroundColor: '#ff6b6b',
+                                borderRadius: 5
+                            },
+                            {
+                                label: 'Active',
+                                data: [
+                                    activeLogin.Daily || 0,
+                                    activeLogin.Weekly || 0,
+                                    activeLogin.Rarely || 0
+                                ],
+                                backgroundColor: '#51cf66',
+                                borderRadius: 5
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'bottom' } }
+                    }
+                });
+            }
+        }
+
+        // Wait for charts to load then initialize
+        setTimeout(() => {
+            const metrics = JSON.parse(localStorage.getItem('dashboardMetrics'));
+            const comparison = JSON.parse(localStorage.getItem('dashboardComparison'));
+            if (metrics && comparison) {
+                InitializeCharts(metrics, comparison);
+            }
+        }, 500);
+
+        // Store data in localStorage for chart initialization
+        function DashboardWrapper() {
+            const [metrics, setMetrics] = useState(null);
+            const [comparison, setComparison] = useState(null);
+            const [insights, setInsights] = useState(null);
+            const [loading, setLoading] = useState(true);
+            const [error, setError] = useState(null);
+
+            useEffect(() => {
+                Promise.all([
+                    fetch('http://localhost:5000/api/metrics').then(r => r.json()),
+                    fetch('http://localhost:5000/api/comparison').then(r => r.json()),
+                    fetch('http://localhost:5000/api/insights').then(r => r.json())
+                ])
+                .then(([metricsData, comparisonData, insightsData]) => {
+                    setMetrics(metricsData);
+                    setComparison(comparisonData);
+                    setInsights(insightsData);
+                    localStorage.setItem('dashboardMetrics', JSON.stringify(metricsData));
+                    localStorage.setItem('dashboardComparison', JSON.stringify(comparisonData));
+                    setLoading(false);
+                    setTimeout(() => InitializeCharts(metricsData, comparisonData), 100);
+                })
+                .catch(err => {
+                    setError('Failed to load data. Make sure Flask API is running on http://localhost:5000');
+                    setLoading(false);
+                });
+            }, []);
+
+            if (loading) {
+                return <div className="container"><div className="loading">Loading dashboard...</div></div>;
+            }
+
+            if (error) {
+                return <div className="container"><div className="error">{error}</div></div>;
+            }
+
+            return (
+                <div className="container">
+                    <div className="header">
+                        <h1>📊 SaaS Analytics Dashboard</h1>
+                        <p>Real-time customer churn analysis</p>
+                    </div>
+
+                    <div className="metrics-grid">
+                        <div className="card">
+                            <div className="card-label">Total Customers</div>
+                            <div className="card-value">{metrics.total_customers.toLocaleString()}</div>
+                            <div className="card-subtext">All active and churned</div>
+                        </div>
+
+                        <div className="card">
+                            <div className="card-label">Churned Customers</div>
+                            <div className="card-value" style={{color: '#ff6b6b'}}>{metrics.churned_customers}</div>
+                            <div className="card-subtext">Customers who left</div>
+                        </div>
+
+                        <div className="card">
+                            <div className="card-label">Active Customers</div>
+                            <div className="card-value" style={{color: '#51cf66'}}>{metrics.active_customers}</div>
+                            <div className="card-subtext">Customers who stayed</div>
+                        </div>
+
+                        <div className="card">
+                            <div className="card-label">Churn Rate</div>
+                            <div className="card-value" style={{color: '#ffa94d'}}>{metrics.churn_rate}%</div>
+                            <div className="card-subtext">Percentage of churn</div>
+                        </div>
+                    </div>
+
+                    <div className="charts-section">
+                        <h2>Customer Segmentation</h2>
+                        <div className="charts-grid">
+                            <div className="chart-container">
+                                <canvas id="churnChart"></canvas>
+                            </div>
+
+                            <div className="chart-container">
+                                <canvas id="usageChart"></canvas>
+                            </div>
+
+                            <div className="chart-container">
+                                <canvas id="loginChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="insights-section">
+                        <h2>💡 Key Insights</h2>
+                        {insights.insights.map((insight, idx) => (
+                            <div key={idx} className="insight-item">
+                                {insight}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<DashboardWrapper />, document.getElementById('root'));
+    </script>
+</body>
+</html>
