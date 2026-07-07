@@ -20,14 +20,14 @@ This project demonstrates a complete data analytics pipeline:
 
 sales-analytics-dashboard/
 ├── backend/
-│   ├── analyze_data.py      # Data analysis script with pandas
-│   └── app.py               # Flask API with 4 endpoints
+│   ├── analyze_data.py
+│   └── app.py
 ├── frontend/
-│   └── index.html           # React dashboard (standalone HTML)
+│   └── index.html
 ├── data/
-│   ├── train.csv            # Training dataset (2,000 customer records)
-│   └── test_.csv            # Test dataset
-└── README.md                # This file
+│   ├── train.csv
+│   └── test_.csv
+└── README.md
 
 ## 🚀 Tech Stack
 
