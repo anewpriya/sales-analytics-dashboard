@@ -1,0 +1,29 @@
+name: Dashboard validation
+on:
+  pull_request:
+  push:
+    branches: [main, 'portfolio/retention-intelligence']
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements.txt
+      - run: python -m pytest -q
+      - run: python backend/evaluate_model.py
+      - run: node --check frontend/dashboard.js
+      - run: python -m pip install playwright==1.51.0
+      - run: python -m playwright install --with-deps chromium
+      - run: |
+          python backend/app.py > /tmp/dashboard.log 2>&1 &
+          for i in {1..30}; do
+            if curl -fsS http://127.0.0.1:5000/api/health; then break; fi
+            sleep 1
+          done
+          python tests/browser_check.py
