@@ -1,95 +1,111 @@
-from flask import Flask, jsonify
-from flask_cors import CORS
+from pathlib import Path
+
 import pandas as pd
+from flask import Flask, jsonify, request, send_from_directory
 
-app = Flask(__name__)
-CORS(app)
+ROOT = Path(__file__).resolve().parents[1]
+FEATURES = ["Account_Age_Days", "Login_Frequency", "Daily_Usage_Mins", "Churn"]
+LOGIN = ["Daily", "Weekly", "Rarely"]
 
-# Load data once when the app starts
-df = pd.read_csv('data/train.csv')
 
-# Route 1: Get overall metrics
-@app.route('/api/metrics', methods=['GET'])
-def get_metrics():
-    """
-    Returns overall churn metrics
-    GET /api/metrics
-    """
-    total_customers = len(df)
-    churned_customers = df['Churn'].sum()
-    active_customers = total_customers - churned_customers
-    churn_rate = (churned_customers / total_customers) * 100
-    
-    return jsonify({
-        'total_customers': int(total_customers),
-        'churned_customers': int(churned_customers),
-        'active_customers': int(active_customers),
-        'churn_rate': round(churn_rate, 2)
-    })
+def load_data(path):
+    df = pd.read_csv(path, usecols=FEATURES)
+    if df.empty or df.isna().any().any():
+        raise ValueError("Dataset is empty or contains missing values")
+    if not df.Churn.isin([0, 1]).all() or not df.Login_Frequency.isin(LOGIN).all():
+        raise ValueError("Invalid churn or login category")
+    if (df[["Account_Age_Days", "Daily_Usage_Mins"]] < 0).any().any():
+        raise ValueError("Negative tenure or usage")
+    return df
 
-# Route 2: Get detailed comparison
-@app.route('/api/comparison', methods=['GET'])
-def get_comparison():
-    """
-    Returns detailed metrics comparing churned vs active customers
-    GET /api/comparison
-    """
-    churned = df[df['Churn'] == 1]
-    active = df[df['Churn'] == 0]
-    
-    return jsonify({
-        'churned': {
-            'count': int(len(churned)),
-            'avg_account_age_days': round(churned['Account_Age_Days'].mean(), 1),
-            'avg_daily_usage_mins': round(churned['Daily_Usage_Mins'].mean(), 1),
-            'login_frequency': churned['Login_Frequency'].value_counts().to_dict()
-        },
-        'active': {
-            'count': int(len(active)),
-            'avg_account_age_days': round(active['Account_Age_Days'].mean(), 1),
-            'avg_daily_usage_mins': round(active['Daily_Usage_Mins'].mean(), 1),
-            'login_frequency': active['Login_Frequency'].value_counts().to_dict()
-        }
-    })
 
-# Route 3: Get insights
-@app.route('/api/insights', methods=['GET'])
-def get_insights():
-    """
-    Returns business insights derived from the data
-    GET /api/insights
-    """
-    churned = df[df['Churn'] == 1]
-    active = df[df['Churn'] == 0]
-    
-    usage_diff = active['Daily_Usage_Mins'].mean() - churned['Daily_Usage_Mins'].mean()
-    age_diff = active['Account_Age_Days'].mean() - churned['Account_Age_Days'].mean()
-    churn_rate = (df['Churn'].sum() / len(df)) * 100
-    
-    return jsonify({
-        'insights': [
-            f"Active customers use the platform {usage_diff:.1f} more minutes/day than churned customers",
-            f"Churned customers are {age_diff:.1f} days younger on average (newer accounts)",
-            f"Overall churn rate is {churn_rate:.1f}%",
-            "Low daily usage is the strongest indicator of churn risk"
-        ]
-    })
+def summarise(df):
+    n = len(df)
+    churned = int(df.Churn.sum())
+    return dict(total_customers=n, churned_customers=churned,
+                active_customers=n - churned,
+                churn_rate=round(100 * churned / n, 2) if n else None)
 
-# Route 4: Health check
-@app.route('/api/health', methods=['GET'])
-def health_check():
-    """
-    Simple health check endpoint
-    GET /api/health
-    """
-    return jsonify({
-        'status': 'API is running',
-        'data_loaded': True,
-        'total_records': len(df)
-    })
 
-if __name__ == '__main__':
-    print("🚀 Starting SaaS Analytics API...")
-    print("📊 Loaded", len(df), "customer records")
-    print("Visit http://localhost:5000/api/health to test")
-    app.run(debug=True, host='localhost', port=5000)
+def describe(df):
+    def mean(col):
+        return round(float(df[col].mean()), 1) if len(df) else None
+    return dict(count=len(df), avg_account_age_days=mean("Account_Age_Days"),
+                avg_daily_usage_mins=mean("Daily_Usage_Mins"),
+                login_frequency={k: int((df.Login_Frequency == k).sum()) for k in LOGIN})
+
+
+def compare(df):
+    return {name: describe(df[df.Churn == label])
+            for name, label in [("active", 0), ("churned", 1)]}
+
+
+def segments(df):
+    result = {}
+    for key, column, bins, labels in [
+        ("tenure", "Account_Age_Days", [-1, 90, 365, float("inf")], ["0–90 days", "91–365 days", "366+ days"]),
+        ("usage", "Daily_Usage_Mins", [-1, 15, 30, 60, float("inf")], ["0–15 min", "16–30 min", "31–60 min", "61+ min"]),
+    ]:
+        groups = pd.cut(df[column], bins=bins, labels=labels)
+        result[key] = [dict(label=label, **summarise(df[groups == label])) for label in labels]
+    result["login"] = [dict(label=label, **summarise(df[df.Login_Frequency == label])) for label in LOGIN]
+    return result
+
+
+def snapshot(df):
+    c = compare(df)
+    a, b = c["active"], c["churned"]
+    insights = []
+    if a["count"] and b["count"]:
+        gap = df[df.Churn == 0].Daily_Usage_Mins.mean() - df[df.Churn == 1].Daily_Usage_Mins.mean()
+        insights.append(f"Active minus churned average daily usage: {gap:.1f} minutes.")
+    insights.append("Observed associations do not establish causation or future churn risk.")
+    return dict(metrics=summarise(df), comparison=c, segments=segments(df), insights=insights)
+
+
+def create_app(data=None):
+    app = Flask(__name__)
+    df = load_data(ROOT / "data" / "train.csv") if data is None else data
+
+    def selected():
+        login = request.args.get("login", "all")
+        if login != "all" and login not in LOGIN:
+            return None
+        return df if login == "all" else df[df.Login_Frequency == login]
+
+    @app.get("/")
+    def index():
+        return send_from_directory(ROOT / "frontend", "index.html")
+
+    @app.get("/<path:filename>")
+    def assets(filename):
+        return send_from_directory(ROOT / "frontend", filename)
+
+    @app.get("/api/health")
+    def health():
+        return jsonify(status="ok", total_records=len(df))
+
+    @app.get("/api/dashboard")
+    @app.get("/api/metrics")
+    @app.get("/api/comparison")
+    @app.get("/api/insights")
+    @app.get("/api/segments")
+    def dashboard():
+        subset = selected()
+        if subset is None:
+            return jsonify(error="Invalid login filter"), 400
+        data = snapshot(subset)
+        key = request.path.rsplit("/", 1)[-1]
+        if key == "dashboard":
+            return jsonify(data)
+        if key == "insights":
+            return jsonify(insights=data[key])
+        return jsonify(data[key])
+
+    return app
+
+
+app = create_app()
+
+if __name__ == "__main__":
+    app.run(host="127.0.0.1", port=5000, debug=False)

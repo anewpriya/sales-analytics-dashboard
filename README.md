@@ -1,164 +1,54 @@
-# SaaS Analytics Dashboard
+# SaaS Retention Intelligence
 
-A full-stack web application for analyzing customer churn metrics and business performance. Built with Python Flask backend, React frontend, and interactive data visualization.
+A product analytics prototype for product, growth and customer success teams. Explore behavioural differences, segment churn and prioritise lifecycle experiments.
 
-## 🎯 Project Overview
+## Findings
 
-This project demonstrates a complete data analytics pipeline:
-- **Data Analysis**: Real SaaS customer data (2,000+ records) analyzed with pandas
-- **Backend API**: Flask REST API with 4 endpoints serving JSON metrics
-- **Frontend Dashboard**: React interactive dashboard with Chart.js visualizations
+| Metric | Synthetic sample |
+| --- | ---: |
+| Customers | 2,000 |
+| Active | 1,263 |
+| Churned | 737 |
+| Churn proportion | 36.85% |
+| Average daily usage (active / churned) | 47.7 / 16.4 min |
 
-## 📊 Key Metrics & Insights
+The observed usage gap is approximately 31.3 minutes/day. It is an association, not causal evidence or a validated future-risk predictor.
 
-- **Churn Rate**: 36.85% (737 out of 2,000 customers)
-- **Active Customers**: 1,263
-- **Critical Finding**: Active customers use the platform **31.3 more minutes/day** than churned customers
-- **Business Implication**: Low daily usage is the strongest predictor of churn risk
+## Run locally
 
-## 🏗️ Project Structure
+Python 3.10–3.12 recommended.
 
-sales-analytics-dashboard/
-├── backend/
-│   ├── analyze_data.py
-│   └── app.py
-├── frontend/
-│   └── index.html
-├── data/
-│   ├── train.csv
-│   └── test_.csv
-└── README.md
-
-## 🚀 Tech Stack
-
-**Backend:**
-- Python 3.12
-- Flask (REST API framework)
-- pandas (data analysis)
-- Flask-CORS (cross-origin requests)
-
-**Frontend:**
-- React 18 (via CDN)
-- Chart.js (interactive charts)
-- Vanilla HTML/CSS
-
-**Data:**
-- Kaggle SaaS Customer Churn Dataset
-- 2,000 customer records with behavior metrics
-
-## 📈 API Endpoints
-
-### 1. GET `/api/health`
-Health check endpoint
-
-### 2. GET `/api/metrics`
-Overall churn metrics
-
-### 3. GET `/api/comparison`
-Detailed comparison of churned vs active customers
-
-### 4. GET `/api/insights`
-Business insights derived from analysis
-
-## 🎨 Dashboard Features
-
-- **Metric Cards**: Total customers, churned, active, churn rate
-- **Doughnut Chart**: Active vs churned customer split
-- **Bar Charts**: Usage comparison and login frequency distribution
-- **Key Insights**: 4 business insights auto-calculated from data
-- **Responsive Design**: Works on desktop and mobile
-
-## 🔧 Setup & Installation
-
-### Prerequisites
-- Python 3.12+
-- Git
-
-### Backend Setup
-
-1. Clone the repository
 ```bash
-   git clone https://github.com/anewpriya/sales-analytics-dashboard.git
-   cd sales-analytics-dashboard
+python -m venv .venv
+# macOS/Linux: source .venv/bin/activate
+# Windows: .venv\Scripts\activate
+python -m pip install -r requirements.txt
+python backend/app.py
 ```
 
-2. Install Python dependencies
+Open http://127.0.0.1:5000. The frontend uses React and Chart.js CDN assets (internet connection required).
+
 ```bash
-   py -3.12 -m pip install flask flask-cors pandas
+python backend/analyze_data.py
+python backend/evaluate_model.py
+python -m pytest -q
 ```
 
-3. Run the Flask API
-```bash
-   py -3.12 backend/app.py
-```
-   API runs on `http://localhost:5000`
+## Architecture
 
-### Frontend Setup
+React + Chart.js → same-origin Flask API → pandas → static CSV. The offline scikit-learn model is separate from the dashboard.
 
-1. Open the dashboard
-   - Open `frontend/index.html` in your browser
-   - Dashboard runs on `http://localhost:5500` (or file://)
+API: /api/health, /api/dashboard, /api/metrics, /api/comparison, /api/insights, /api/segments. Analytics accept an optional login filter (Daily, Weekly or Rarely).
 
-2. Ensure Flask API is running before opening the dashboard
+## Product evidence
 
-## 💡 Learning Outcomes
+- [Product brief](docs/PRODUCT_BRIEF.md)
+- [Case study](docs/CASE_STUDY.md)
+- [Experiment plan](docs/EXPERIMENT_PLAN.md)
+- [Data and model notes](docs/DATA_AND_MODEL.md)
 
-This project demonstrates:
-- ✅ **Data Analysis**: Pandas for exploring customer behavior patterns
-- ✅ **Backend Engineering**: REST API design and CORS implementation
-- ✅ **Frontend Development**: React with external library integration
-- ✅ **Data Visualization**: Interactive charts with Chart.js
-- ✅ **Full-Stack Integration**: Seamless frontend-backend communication
-- ✅ **Business Analytics**: Deriving actionable insights from data
+## Limitations
 
-## 📊 Data Source
+Synthetic, cross-sectional data; original dataset URL and redistribution terms unverified. No live customer outcomes, longitudinal cohorts, real-time data, production deployment or prospective model validation. Public redistribution should be reviewed against the source licence.
 
-Dataset: SaaS Customer Churn Prediction Dataset from Kaggle
-
-**Features:**
-- Customer ID, Name, Email
-- Account age (days)
-- Login frequency (Daily/Weekly/Rarely)
-- Daily usage (minutes)
-- Support ticket text
-- Churn label (0=active, 1=churned)
-
-## 🎓 Key Insights & Recommendations
-
-### Finding 1: Usage Drives Retention
-Active customers average **47.7 minutes/day** vs churned at **16.4 minutes/day**
-
-**Recommendation**: Implement onboarding features to increase daily active usage.
-
-### Finding 2: Newer Accounts at Risk
-Churned customers are **20.4 days younger** on average
-
-**Recommendation**: Strengthen onboarding process and early-stage customer support.
-
-### Finding 3: Login Frequency Correlation
-Active customers log in **Daily** (59.8%)
-Churned customers log in **Rarely** (39.1%)
-
-**Recommendation**: Use login frequency as an early warning signal for re-engagement campaigns.
-
-## 🚀 Future Enhancements
-
-- [ ] Deploy to cloud (Vercel + Heroku)
-- [ ] Add database (PostgreSQL instead of CSV)
-- [ ] Implement user authentication
-- [ ] Add date range filtering
-- [ ] Real-time data updates
-- [ ] Predictive churn model (ML)
-
-## 📝 License
-
-MIT License - feel free to use this project for learning purposes.
-
-## 👤 Author
-
-**Anupriya Singh**
-- GitHub: [@anewpriya](https://github.com/anewpriya)
-
----
-
-**Built as a learning project to demonstrate full-stack data analytics skills.**
+Author: Anupriya Singh · MIT licence applies to project code.
