@@ -1,0 +1,450 @@
+{
+  "all": {
+    "metrics": {
+      "total_customers": 2000,
+      "churned_customers": 737,
+      "active_customers": 1263,
+      "churn_rate": 36.85
+    },
+    "comparison": {
+      "active": {
+        "count": 1263,
+        "avg_account_age_days": 568.5,
+        "avg_daily_usage_mins": 47.7,
+        "login_frequency": {
+          "Daily": 755,
+          "Weekly": 459,
+          "Rarely": 49
+        }
+      },
+      "churned": {
+        "count": 737,
+        "avg_account_age_days": 548.1,
+        "avg_daily_usage_mins": 16.4,
+        "login_frequency": {
+          "Daily": 113,
+          "Weekly": 336,
+          "Rarely": 288
+        }
+      }
+    },
+    "segments": {
+      "tenure": [
+        {
+          "label": "0–90 days",
+          "total_customers": 172,
+          "churned_customers": 63,
+          "active_customers": 109,
+          "churn_rate": 36.63
+        },
+        {
+          "label": "91–365 days",
+          "total_customers": 466,
+          "churned_customers": 184,
+          "active_customers": 282,
+          "churn_rate": 39.48
+        },
+        {
+          "label": "366+ days",
+          "total_customers": 1362,
+          "churned_customers": 490,
+          "active_customers": 872,
+          "churn_rate": 35.98
+        }
+      ],
+      "usage": [
+        {
+          "label": "0–15 min",
+          "total_customers": 670,
+          "churned_customers": 546,
+          "active_customers": 124,
+          "churn_rate": 81.49
+        },
+        {
+          "label": "16–30 min",
+          "total_customers": 334,
+          "churned_customers": 70,
+          "active_customers": 264,
+          "churn_rate": 20.96
+        },
+        {
+          "label": "31–60 min",
+          "total_customers": 684,
+          "churned_customers": 102,
+          "active_customers": 582,
+          "churn_rate": 14.91
+        },
+        {
+          "label": "61+ min",
+          "total_customers": 312,
+          "churned_customers": 19,
+          "active_customers": 293,
+          "churn_rate": 6.09
+        }
+      ],
+      "login": [
+        {
+          "label": "Daily",
+          "total_customers": 868,
+          "churned_customers": 113,
+          "active_customers": 755,
+          "churn_rate": 13.02
+        },
+        {
+          "label": "Weekly",
+          "total_customers": 795,
+          "churned_customers": 336,
+          "active_customers": 459,
+          "churn_rate": 42.26
+        },
+        {
+          "label": "Rarely",
+          "total_customers": 337,
+          "churned_customers": 288,
+          "active_customers": 49,
+          "churn_rate": 85.46
+        }
+      ]
+    },
+    "insights": [
+      "Active minus churned average daily usage: 31.3 minutes.",
+      "Observed associations do not establish causation or future churn risk."
+    ]
+  },
+  "Daily": {
+    "metrics": {
+      "total_customers": 868,
+      "churned_customers": 113,
+      "active_customers": 755,
+      "churn_rate": 13.02
+    },
+    "comparison": {
+      "active": {
+        "count": 755,
+        "avg_account_age_days": 572.6,
+        "avg_daily_usage_mins": 58.9,
+        "login_frequency": {
+          "Daily": 755,
+          "Weekly": 0,
+          "Rarely": 0
+        }
+      },
+      "churned": {
+        "count": 113,
+        "avg_account_age_days": 544.8,
+        "avg_daily_usage_mins": 44.7,
+        "login_frequency": {
+          "Daily": 113,
+          "Weekly": 0,
+          "Rarely": 0
+        }
+      }
+    },
+    "segments": {
+      "tenure": [
+        {
+          "label": "0–90 days",
+          "total_customers": 74,
+          "churned_customers": 11,
+          "active_customers": 63,
+          "churn_rate": 14.86
+        },
+        {
+          "label": "91–365 days",
+          "total_customers": 195,
+          "churned_customers": 27,
+          "active_customers": 168,
+          "churn_rate": 13.85
+        },
+        {
+          "label": "366+ days",
+          "total_customers": 599,
+          "churned_customers": 75,
+          "active_customers": 524,
+          "churn_rate": 12.52
+        }
+      ],
+      "usage": [
+        {
+          "label": "0–15 min",
+          "total_customers": 15,
+          "churned_customers": 3,
+          "active_customers": 12,
+          "churn_rate": 20
+        },
+        {
+          "label": "16–30 min",
+          "total_customers": 151,
+          "churned_customers": 36,
+          "active_customers": 115,
+          "churn_rate": 23.84
+        },
+        {
+          "label": "31–60 min",
+          "total_customers": 390,
+          "churned_customers": 55,
+          "active_customers": 335,
+          "churn_rate": 14.1
+        },
+        {
+          "label": "61+ min",
+          "total_customers": 312,
+          "churned_customers": 19,
+          "active_customers": 293,
+          "churn_rate": 6.09
+        }
+      ],
+      "login": [
+        {
+          "label": "Daily",
+          "total_customers": 868,
+          "churned_customers": 113,
+          "active_customers": 755,
+          "churn_rate": 13.02
+        },
+        {
+          "label": "Weekly",
+          "total_customers": 0,
+          "churned_customers": 0,
+          "active_customers": 0,
+          "churn_rate": null
+        },
+        {
+          "label": "Rarely",
+          "total_customers": 0,
+          "churned_customers": 0,
+          "active_customers": 0,
+          "churn_rate": null
+        }
+      ]
+    },
+    "insights": [
+      "Active minus churned average daily usage: 14.1 minutes.",
+      "Observed associations do not establish causation or future churn risk."
+    ]
+  },
+  "Weekly": {
+    "metrics": {
+      "total_customers": 795,
+      "churned_customers": 336,
+      "active_customers": 459,
+      "churn_rate": 42.26
+    },
+    "comparison": {
+      "active": {
+        "count": 459,
+        "avg_account_age_days": 562.7,
+        "avg_daily_usage_mins": 33.5,
+        "login_frequency": {
+          "Daily": 0,
+          "Weekly": 459,
+          "Rarely": 0
+        }
+      },
+      "churned": {
+        "count": 336,
+        "avg_account_age_days": 545.4,
+        "avg_daily_usage_mins": 15,
+        "login_frequency": {
+          "Daily": 0,
+          "Weekly": 336,
+          "Rarely": 0
+        }
+      }
+    },
+    "segments": {
+      "tenure": [
+        {
+          "label": "0–90 days",
+          "total_customers": 73,
+          "churned_customers": 30,
+          "active_customers": 43,
+          "churn_rate": 41.1
+        },
+        {
+          "label": "91–365 days",
+          "total_customers": 186,
+          "churned_customers": 85,
+          "active_customers": 101,
+          "churn_rate": 45.7
+        },
+        {
+          "label": "366+ days",
+          "total_customers": 536,
+          "churned_customers": 221,
+          "active_customers": 315,
+          "churn_rate": 41.23
+        }
+      ],
+      "usage": [
+        {
+          "label": "0–15 min",
+          "total_customers": 318,
+          "churned_customers": 255,
+          "active_customers": 63,
+          "churn_rate": 80.19
+        },
+        {
+          "label": "16–30 min",
+          "total_customers": 183,
+          "churned_customers": 34,
+          "active_customers": 149,
+          "churn_rate": 18.58
+        },
+        {
+          "label": "31–60 min",
+          "total_customers": 294,
+          "churned_customers": 47,
+          "active_customers": 247,
+          "churn_rate": 15.99
+        },
+        {
+          "label": "61+ min",
+          "total_customers": 0,
+          "churned_customers": 0,
+          "active_customers": 0,
+          "churn_rate": null
+        }
+      ],
+      "login": [
+        {
+          "label": "Daily",
+          "total_customers": 0,
+          "churned_customers": 0,
+          "active_customers": 0,
+          "churn_rate": null
+        },
+        {
+          "label": "Weekly",
+          "total_customers": 795,
+          "churned_customers": 336,
+          "active_customers": 459,
+          "churn_rate": 42.26
+        },
+        {
+          "label": "Rarely",
+          "total_customers": 0,
+          "churned_customers": 0,
+          "active_customers": 0,
+          "churn_rate": null
+        }
+      ]
+    },
+    "insights": [
+      "Active minus churned average daily usage: 18.6 minutes.",
+      "Observed associations do not establish causation or future churn risk."
+    ]
+  },
+  "Rarely": {
+    "metrics": {
+      "total_customers": 337,
+      "churned_customers": 288,
+      "active_customers": 49,
+      "churn_rate": 85.46
+    },
+    "comparison": {
+      "active": {
+        "count": 49,
+        "avg_account_age_days": 560.2,
+        "avg_daily_usage_mins": 8,
+        "login_frequency": {
+          "Daily": 0,
+          "Weekly": 0,
+          "Rarely": 49
+        }
+      },
+      "churned": {
+        "count": 288,
+        "avg_account_age_days": 552.5,
+        "avg_daily_usage_mins": 7,
+        "login_frequency": {
+          "Daily": 0,
+          "Weekly": 0,
+          "Rarely": 288
+        }
+      }
+    },
+    "segments": {
+      "tenure": [
+        {
+          "label": "0–90 days",
+          "total_customers": 25,
+          "churned_customers": 22,
+          "active_customers": 3,
+          "churn_rate": 88
+        },
+        {
+          "label": "91–365 days",
+          "total_customers": 85,
+          "churned_customers": 72,
+          "active_customers": 13,
+          "churn_rate": 84.71
+        },
+        {
+          "label": "366+ days",
+          "total_customers": 227,
+          "churned_customers": 194,
+          "active_customers": 33,
+          "churn_rate": 85.46
+        }
+      ],
+      "usage": [
+        {
+          "label": "0–15 min",
+          "total_customers": 337,
+          "churned_customers": 288,
+          "active_customers": 49,
+          "churn_rate": 85.46
+        },
+        {
+          "label": "16–30 min",
+          "total_customers": 0,
+          "churned_customers": 0,
+          "active_customers": 0,
+          "churn_rate": null
+        },
+        {
+          "label": "31–60 min",
+          "total_customers": 0,
+          "churned_customers": 0,
+          "active_customers": 0,
+          "churn_rate": null
+        },
+        {
+          "label": "61+ min",
+          "total_customers": 0,
+          "churned_customers": 0,
+          "active_customers": 0,
+          "churn_rate": null
+        }
+      ],
+      "login": [
+        {
+          "label": "Daily",
+          "total_customers": 0,
+          "churned_customers": 0,
+          "active_customers": 0,
+          "churn_rate": null
+        },
+        {
+          "label": "Weekly",
+          "total_customers": 0,
+          "churned_customers": 0,
+          "active_customers": 0,
+          "churn_rate": null
+        },
+        {
+          "label": "Rarely",
+          "total_customers": 337,
+          "churned_customers": 288,
+          "active_customers": 49,
+          "churn_rate": 85.46
+        }
+      ]
+    },
+    "insights": [
+      "Active minus churned average daily usage: 1.0 minutes.",
+      "Observed associations do not establish causation or future churn risk."
+    ]
+  }
+}

@@ -2,6 +2,10 @@
 
 A product analytics prototype for product, growth and customer success teams. Explore behavioural differences, segment churn and prioritise lifecycle experiments.
 
+## Browser demo
+
+A static, aggregate-only demo is prepared in `demo/`. It uses the same dashboard interface and four precomputed login-filter snapshots. GitHub Pages activation is required before a public URL is available. The Flask application remains available for local use.
+
 ## Findings
 
 | Metric | Synthetic sample |
