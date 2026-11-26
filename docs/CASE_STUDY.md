@@ -13,4 +13,4 @@ Prioritise investigation of activation and low engagement. Use tenure, usage and
 Flask serves aggregate analytics from pandas; React and Chart.js present comparisons and filters. The offline logistic regression baseline tests classification methodology separately from the dashboard.
 
 ## Next validation
-Confirm original dataset provenance; collect timestamped pre-churn events; evaluate prospective risk models and run controlled experiments. No production deployment or live customer outcome is claimed.
+Dataset provenance is documented in [data and model notes](DATA_AND_MODEL.md); collect timestamped pre-churn events; evaluate prospective risk models and run controlled experiments. No production deployment or live customer outcome is claimed.
