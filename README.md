@@ -53,8 +53,12 @@ API: /api/health, /api/dashboard, /api/metrics, /api/comparison, /api/insights, 
 - [Experiment plan](docs/EXPERIMENT_PLAN.md)
 - [Data and model notes](docs/DATA_AND_MODEL.md)
 
+## Dataset and licence
+
+Source: [SaaS Customer Churn Prediction Dataset — Suhani Gupta (Kaggle)](https://www.kaggle.com/datasets/suhanigupta04/saas-customer-churn-prediction-dataset). The Kaggle data card describes TechFlow as fictional, lists 2,500 records split across train.csv and test.csv, and specifies CC0: Public Domain. The dashboard uses the 2,000-record training sample. Source attribution is based on matching dataset structure and statistics and the supplied Kaggle data card; the upstream file checksum has not been compared. The CC0 designation applies to the dataset, separately from the MIT licence for project code.
+
 ## Limitations
 
-Synthetic, cross-sectional data; original dataset URL and redistribution terms unverified. No live customer outcomes, longitudinal cohorts, real-time data, production deployment or prospective model validation. Public redistribution should be reviewed against the source licence.
+Synthetic, cross-sectional data. No live customer outcomes, longitudinal cohorts, real-time data, production payment or customer systems, or prospective model validation.
 
 Author: Anupriya Singh · MIT licence applies to project code.
