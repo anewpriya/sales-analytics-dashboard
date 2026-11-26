@@ -46,19 +46,19 @@ function App() {
     if(!data) return h("main",null,header,filter,h("div",{className:"card"+(error?" error":""),role:error?"alert":"status"},error||"Loading analytics…"));
     const m=data.metrics, a=data.comparison.active, c=data.comparison.churned;
     const actions=[
-        ["Early activation","Test a contextual onboarding checklist for new accounts.","7-day activation; support contacts"],
-        ["Re-engagement","Test targeted outreach to consenting low-usage accounts.","14-day return rate; unsubscribes"],
-        ["Product education","Test use-case tutorials for infrequent users.","30-day active retention; opt-outs"]
+        ["1. Re-engagement","First investigate low-usage accounts; test targeted outreach with consenting users.","14-day return rate; unsubscribes"],
+        ["2. Product education","Test use-case tutorials for infrequent users.","30-day active retention; opt-outs"],
+        ["3. Early activation","Explore onboarding friction before testing a contextual checklist for new accounts.","7-day activation; support contacts"]
     ];
     return h("main",null,header,filter,
         h("div",{className:"metrics"},...[["Accounts",fmt(m.total_customers)],["Active",fmt(m.active_customers)],["Churned",fmt(m.churned_customers)],["Churn proportion",pct(m.churn_rate)]].map(([k,v])=>h("section",{key:k,className:"card"},h("div",{className:"muted"},k),h("div",{className:"number"},v)))),
-        h("div",{className:"callout"},h("h3",null,"What the data tells us"),...data.insights.map((x,i)=>h("p",{key:i},x))),
+        h("div",{className:"callout"},h("h3",null,"What the data tells us"),...data.insights.map((x,i)=>h("p",{key:i},x)),login==="all"&&h("p",null,"Infrequent login accounts show 85.46% labelled churn versus 13.02% for daily login accounts. This is a prioritisation signal, not a causal finding.")),
         h("div",{className:"grid"},
             h(Card,{title:"Average daily usage (minutes)"},h(Bar,{labels:["Active","Churned"],values:[a.avg_daily_usage_mins,c.avg_daily_usage_mins],label:"Minutes",color:["#176b77","#b76b43"]}),h("p",{className:"muted"},"Active: "+fmt(a.avg_daily_usage_mins)+" · Churned: "+fmt(c.avg_daily_usage_mins))),
             h(Card,{title:"Login frequency"},h(SegmentTable,{groups:data.segments.login}))),
         h("div",{className:"grid"},h(Card,{title:"Account tenure"},h(SegmentTable,{groups:data.segments.tenure})),h(Card,{title:"Daily usage bands"},h(SegmentTable,{groups:data.segments.usage}))),
-        h(Card,{title:"Proposed lifecycle experiments"},h("p",{className:"muted"},"Hypotheses for future controlled tests, not measured outcomes."),h("div",{className:"actions"},...actions.map(([title,desc,metric])=>h("article",{key:title,className:"action"},h("h3",null,title),h("p",null,desc),h("small",{className:"muted"},metric))))),
-        h("footer",{className:"footer"},"Portfolio prototype. No live customer data, causal claims or prospective risk predictions. The offline classification baseline is documented in the repository.")
+        h(Card,{title:"Proposed lifecycle experiments"},h("p",{className:"muted"},"Suggested order for investigation across the full sample, not proven impact. Validate audience size, feasibility and consent before testing."),h("div",{className:"actions"},...actions.map(([title,desc,metric])=>h("article",{key:title,className:"action"},h("h3",null,title),h("p",null,desc),h("small",{className:"muted"},metric))))),
+        h("footer",{className:"footer"},"Portfolio prototype. No live customer data, causal claims or prospective risk predictions. The offline classification baseline is documented in the repository. ",h("a",{href:"https://github.com/anewpriya/sales-analytics-dashboard/blob/main/docs/CASE_STUDY.md"},"Read the product case study")," · ",h("a",{href:"https://github.com/anewpriya/sales-analytics-dashboard"},"Source code"))
     );
 }
 ReactDOM.createRoot(document.getElementById("root")).render(h(App));
