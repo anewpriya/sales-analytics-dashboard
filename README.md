@@ -2,6 +2,15 @@
 
 A product analytics prototype for product, growth and customer success teams. Explore behavioural differences, segment churn and prioritise lifecycle experiments.
 
+
+## Project preview
+
+![Retention dashboard showing synthetic customer metrics and behavioural analysis](saas-overview.png)
+
+### From insights to proposed experiments
+
+![Customer segments and prioritised lifecycle experiment hypotheses](saas-experiments.png)
+
 ## Browser demo
 
 **[Explore the live dashboard](https://anewpriya.github.io/sales-analytics-dashboard/)** — no installation required.
