@@ -1,6 +1,6 @@
 # Data and model notes
 
-The repository's train.csv contains 2,000 synthetic customer records (confirmed by the author). The exact original Kaggle URL and redistribution terms have not been verified. The application reads only tenure, login frequency, daily usage and churn labels; it does not return names, emails, IDs or support text.
+The repository's train.csv contains 2,000 synthetic customer records (confirmed by the author). Identified source: [SaaS Customer Churn Prediction Dataset — Suhani Gupta (Kaggle)](https://www.kaggle.com/datasets/suhanigupta04/saas-customer-churn-prediction-dataset). The supplied Kaggle data card specifies CC0: Public Domain, a fictional company called TechFlow and 2,500 records split across train.csv and test.csv. The repository's 2,000-record sample matches the training dataset's reported structure and aggregate statistics. A byte-for-byte comparison with the upstream download has not been performed. Dataset licensing is separate from project code licensing. The application reads only tenure, login frequency, daily usage and churn labels; it does not return names, emails, IDs or support text.
 
 | Field | Definition |
 | --- | --- |
